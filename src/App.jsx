@@ -15,6 +15,8 @@ import Login from './pages/auth/Login'
 import Signup from './pages/auth/Signup'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminPackages from './pages/admin/Packages'
+import AdminBookings from './pages/admin/Bookings'
+import AdminPayments from './pages/admin/payments'
 
 export default function App() {
   return (
@@ -63,6 +65,22 @@ export default function App() {
             element={
               <AdminRoute>
                 <AdminPackages />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/bookings"
+            element={
+              <AdminRoute>
+                <AdminBookings />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/payments"
+            element={
+              <AdminRoute>
+                <AdminPayments />
               </AdminRoute>
             }
           />

@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react'
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore'
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
-export function useMyBookings(userId) {
+export function useAllBookings() {
   const [bookings, setBookings] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!userId) return
-    const q = query(
-      collection(db, 'bookings'),
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc'),
-    )
+    const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -20,12 +15,12 @@ export function useMyBookings(userId) {
         setLoading(false)
       },
       (err) => {
-        console.error('useMyBookings error:', err)
+        console.error('useAllBookings error:', err)
         setLoading(false)
       },
     )
     return unsubscribe
-  }, [userId])
+  }, [])
 
   return { bookings, loading }
 }

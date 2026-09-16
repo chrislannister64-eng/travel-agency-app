@@ -2,10 +2,9 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Container, Typography, Grid, Card, CardActionArea, CardContent } from '@mui/material'
 
 const tiles = [
-  
-  { label: 'Packages', desc: 'Add, edit, archive tour packages', to: '/admin/packages', enabled: true },
-  { label: 'Bookings', desc: 'View and manage all bookings', to: '#', enabled: false },
-  { label: 'Payments', desc: 'Reconcile payments against Paystack', to: '#', enabled: false },
+  { label: 'Packages', desc: 'Add, edit, archive tour packages', to: '/admin/packages' },
+  { label: 'Bookings', desc: 'View all bookings, override status', to: '/admin/bookings' },
+  { label: 'Payments', desc: 'Reconcile verified payments', to: '/admin/payments' },
 ]
 
 export default function Dashboard() {
@@ -15,17 +14,11 @@ export default function Dashboard() {
       <Grid container spacing={3} sx={{ maxWidth: 800 }}>
         {tiles.map((tile) => (
           <Grid item xs={12} sm={4} key={tile.label}>
-            <Card sx={{ opacity: tile.enabled ? 1 : 0.5 }}>
-              <CardActionArea
-                component={tile.enabled ? RouterLink : 'div'}
-                to={tile.enabled ? tile.to : undefined}
-                disabled={!tile.enabled}
-              >
+            <Card>
+              <CardActionArea component={RouterLink} to={tile.to}>
                 <CardContent>
                   <Typography variant="h6">{tile.label}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {tile.enabled ? tile.desc : 'Coming soon'}
-                  </Typography>
+                  <Typography variant="body2" color="text.secondary">{tile.desc}</Typography>
                 </CardContent>
               </CardActionArea>
             </Card>

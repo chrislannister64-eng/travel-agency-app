@@ -25,6 +25,7 @@ const emptyForm = {
   price: '',
   currency: 'NGN',
   duration: '',
+  image: '',
 }
 
 export default function Packages() {
@@ -38,13 +39,12 @@ export default function Packages() {
     setSubmitting(true)
     try {
       await addDoc(collection(db, 'packages'), {
-        ...form,
-        price: Number(form.price),
-        images: [],
-        status: 'active',
-        createdBy: user.uid,
-        createdAt: serverTimestamp(),
-      })
+  ...form,
+  price: Number(form.price),
+  status: 'active',
+  createdBy: user.uid,
+  createdAt: serverTimestamp(),
+})
       setForm(emptyForm)
     } catch (err) {
       console.error(err)
@@ -130,6 +130,16 @@ export default function Packages() {
                 rows={3}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Image filename"
+                placeholder="e.g. santorini.jpg"
+                fullWidth
+                required
+                value={form.image}
+                onChange={(e) => setForm({ ...form, image: e.target.value })}
               />
             </Grid>
             <Grid item xs={12}>

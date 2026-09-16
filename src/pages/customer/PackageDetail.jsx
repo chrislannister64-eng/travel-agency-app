@@ -54,14 +54,14 @@ export default function PackageDetail() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundImage: pkg.images?.[0] ? `url(${pkg.images[0]})` : 'none',
+              backgroundImage: pkg.image ? `url(/images/${pkg.image})` : 'none',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
           >
-            {!pkg.images?.[0] && (
+            {!pkg.image && (
               <Typography color="text.secondary">No image yet</Typography>
-            )}
+        )}
           </Box>
           <Typography variant="h4" sx={{ mt: 3 }}>{pkg.title}</Typography>
           <Chip label={pkg.destination} color="primary" variant="outlined" sx={{ mt: 1, mb: 2 }} />

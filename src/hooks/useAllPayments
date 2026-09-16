@@ -1,0 +1,26 @@
+import { useEffect, useState } from 'react'
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase'
+
+export function useAllPayments() {
+  const [payments, setPayments] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const q = query(collection(db, 'payments'), orderBy('verifiedAt', 'desc'))
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        setPayments(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })))
+        setLoading(false)
+      },
+      (err) => {
+        console.error('useAllPayments error:', err)
+        setLoading(false)
+      },
+    )
+    return unsubscribe
+  }, [])
+
+  return { payments, loading }
+}

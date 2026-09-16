@@ -16,9 +16,9 @@ export default function PackageCard({ pkg }) {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          image={pkg.images?.[0] || undefined}
+          image={pkg.image ? `/images/${pkg.image}` : undefined}
         >
-          {!pkg.images?.[0] && (
+          {!pkg.image && (
             <Typography variant="body2" color="text.secondary">No image yet</Typography>
           )}
         </CardMedia>
