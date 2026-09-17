@@ -16,7 +16,7 @@ import Signup from './pages/auth/Signup'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminPackages from './pages/admin/Packages'
 import AdminBookings from './pages/admin/Bookings'
-import AdminPayments from './pages/admin/payments'
+import AdminPayments from './pages/admin/Payments'
 
 export default function App() {
   return (
