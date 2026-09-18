@@ -12,7 +12,6 @@ import {
   Divider,
 } from '@mui/material'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { httpsCallable } from 'firebase/functions'
 import { db, functions } from '../../lib/firebase'
 import { usePackage } from '../../hooks/usePackage'
 import { useAuth } from '../../context/AuthContext'
@@ -80,9 +79,24 @@ export default function Booking() {
             // 3. NEVER trust the client-side "success" callback alone —
             // it can be spoofed. A Cloud Function verifies the transaction
             // server-side with Paystack's secret key before we mark it paid.
-            const verifyPayment = httpsCallable(functions, 'verifyPayment')
-            await verifyPayment({ bookingId: bookingRef.id, reference: response.reference })
-            navigate('/my-bookings')
+            const verifyResponse = await fetch('/api/verify-payment', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    bookingId: bookingRef.id,
+    reference: response.reference,
+  }),
+})
+
+const verifyData = await verifyResponse.json()
+
+if (!verifyResponse.ok || !verifyData.verified) {
+  throw new Error(verifyData.error || 'Payment verification failed')
+}
+
+navigate('/my-bookings')
           } catch (err) {
             console.error(err)
             setError('Payment succeeded but verification failed. Contact support with reference: ' + reference)
