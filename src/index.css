@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f7f5f0;
+  color: #172a2a;
+  background-image: radial-gradient(rgba(23, 107, 103, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+* { box-sizing: border-box; }
+
+::selection { background: #d8eeea; color: #0e4e4b; }
