@@ -18,6 +18,7 @@ export function useAllBookings() {
         console.error('useAllBookings error:', err)
         setLoading(false)
       },
+      
     )
     return unsubscribe
   }, [])
