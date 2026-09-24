@@ -20,6 +20,7 @@ export function useAllBookings() {
       },
       
     )
+    
     return unsubscribe
   }, [])
 
