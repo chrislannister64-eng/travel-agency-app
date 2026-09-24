@@ -1,16 +1,48 @@
+import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Box, Container, Typography, Button, Grid, CircularProgress, Stack } from '@mui/material'
+import { Avatar, Box, Card, CardActionArea, CardMedia, Container, Typography, Button, Grid, CircularProgress, Stack, Rating, Chip } from '@mui/material'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import TravelExploreIcon from '@mui/icons-material/TravelExplore'
-import HotelIcon from '@mui/icons-material/Hotel'
-import SupportAgentIcon from '@mui/icons-material/SupportAgent'
-import MapIcon from '@mui/icons-material/Map'
 import { usePackages } from '../../hooks/usePackages'
 import PackageCard from '../../components/PackageCard'
+import Footer from '../../components/Footer'
+
+const reviewSources = [
+  { label: 'All reviews', rating: '4.9', value: 'all' },
+  { label: 'Tripadvisor', rating: '4.9', value: 'Tripadvisor' },
+  { label: 'Google', rating: '4.8', value: 'Google' },
+  { label: 'Facebook', rating: '4.9', value: 'Facebook' },
+]
+
+const reviews = [
+  {
+    name: 'Andrea M.', source: 'Tripadvisor', location: 'Scotland', initials: 'AM', color: '#D86B42',
+    title: 'Beautiful Scotland!', text: 'We really enjoyed our 10 day trip around Scotland. We got to see beautiful towns, Highlands, and castles. Everything was thoughtful and easy from start to finish.',
+  },
+  {
+    name: 'Suzanne C.', source: 'Tripadvisor', location: 'Scotland', initials: 'SC', color: '#176B67',
+    title: 'An enjoyable experience', text: 'Our guide was very knowledgeable and considerate of everybody\'s requirements. The small group format made the whole journey feel genuinely personal.',
+  },
+  {
+    name: 'Lama K.', source: 'Google', location: 'Norway', initials: 'LK', color: '#D19A3A',
+    title: 'Absolutely wonderful trip', text: 'The fjords were unbelievable and the organisation was excellent. All vouchers and instructions were given super clearly. We loved every day.',
+  },
+]
+
+const featuredDestinations = [
+  { name: 'Iceland', image: 'https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=900&q=85' },
+  { name: 'Scandinavia', image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?auto=format&fit=crop&w=900&q=85', multiCountry: true },
+  { name: 'Norway', image: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85' },
+  { name: 'Scotland', image: 'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?auto=format&fit=crop&w=900&q=85' },
+  { name: 'Ireland', image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85' },
+  { name: 'The Alps', image: 'https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=900&q=85', multiCountry: true },
+]
 
 export default function Home() {
   const { packages, loading } = usePackages()
   const featured = packages.slice(0, 3)
+  const [activeSource, setActiveSource] = useState('all')
+  const visibleReviews = activeSource === 'all' ? reviews : reviews.filter((review) => review.source === activeSource)
 
   return (
     <Box>
@@ -82,7 +114,102 @@ export default function Home() {
             </Grid>
           ))}
         </Grid>
+
+        <Box component="section" aria-labelledby="destinations-heading" sx={{ mt: { xs: 9, md: 12 }, py: { xs: 6, md: 8 }, mx: { xs: -2, md: -3 }, px: { xs: 2, md: 3 }, bgcolor: '#FFF9F0' }}>
+          <Typography id="destinations-heading" variant="h2" align="center" sx={{ color: 'primary.dark', mb: 1 }}>Where to?</Typography>
+          <Typography align="center" sx={{ fontFamily: 'Georgia, serif', fontSize: { xs: '1.2rem', md: '1.45rem' }, mb: 5 }}>
+            Adventure starts here. Take your pick.
+          </Typography>
+          <Grid container spacing={{ xs: 2, md: 2.5 }}>
+            {featuredDestinations.map((destination) => (
+              <Grid item xs={12} sm={6} md={2} key={destination.name}>
+                <Card sx={{ height: '100%', overflow: 'visible', position: 'relative', borderRadius: 2, boxShadow: '0 8px 14px rgba(23, 42, 42, 0.18)' }}>
+                  <CardActionArea component={RouterLink} to={`/packages?destination=${encodeURIComponent(destination.name.replace('The ', ''))}`} sx={{ height: '100%', borderRadius: 2, overflow: 'hidden', textDecoration: 'none' }}>
+                    <CardMedia component="img" image={destination.image} alt={`${destination.name} travel destination`} sx={{ height: { xs: 220, sm: 180, md: 155 }, objectFit: 'cover' }} />
+                    <Typography align="center" sx={{ py: 2, bgcolor: 'white', color: 'text.primary', fontSize: { xs: '1.15rem', md: '1.05rem' }, fontWeight: 600 }}>
+                      {destination.name}
+                    </Typography>
+                  </CardActionArea>
+                  {destination.multiCountry && (
+                    <Chip label="✈ Multi-country" size="small" color="secondary" sx={{ position: 'absolute', top: -12, right: 10, fontWeight: 700 }} />
+                  )}
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+          <Button component={RouterLink} to="/destinations" variant="contained" size="large" sx={{ display: 'flex', mx: 'auto', mt: 5 }}>
+            Show all destinations
+          </Button>
+        </Box>
+
+        <Box component="section" aria-labelledby="reviews-heading" sx={{ mt: { xs: 8, md: 12 }, textAlign: 'center' }}>
+          <Typography variant="overline" color="secondary.main" sx={{ letterSpacing: '0.16em', fontWeight: 700 }}>
+            TRAVELLER STORIES
+          </Typography>
+          <Typography id="reviews-heading" variant="h3" sx={{ mt: 0.5, mb: 1 }}>
+            Loved by curious travellers
+          </Typography>
+          <Typography color="text.secondary" sx={{ maxWidth: 560, mx: 'auto', mb: 4 }}>
+            The best part of the journey is hearing what it meant to the people who took it.
+          </Typography>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="center" sx={{ borderBottom: '1px solid rgba(23, 42, 42, 0.12)', mb: 5 }}>
+            {reviewSources.map((source) => (
+              <Button
+                key={source.value}
+                onClick={() => setActiveSource(source.value)}
+                sx={{
+                  borderRadius: 0,
+                  px: { xs: 2, sm: 3 },
+                  py: 1.5,
+                  color: activeSource === source.value ? 'text.primary' : 'text.secondary',
+                  borderBottom: activeSource === source.value ? '2px solid' : '2px solid transparent',
+                  borderColor: 'text.primary',
+                }}
+              >
+                {source.label} <Box component="span" sx={{ ml: 1, fontWeight: 700 }}>{source.rating}</Box>
+              </Button>
+            ))}
+          </Stack>
+
+          <Stack alignItems="center" sx={{ mb: 5 }}>
+            <Typography variant="h5" sx={{ mb: 1 }}>Overall rating</Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="h4">4.9</Typography>
+              <Rating value={4.9} precision={0.1} readOnly sx={{ color: '#F4C84A' }} />
+              <Typography variant="body2" color="text.secondary">(3,583 reviews)</Typography>
+            </Stack>
+          </Stack>
+
+          <Grid container spacing={3} sx={{ textAlign: 'left' }}>
+            {visibleReviews.map((review) => (
+              <Grid item xs={12} md={4} key={review.name}>
+                <Box sx={{ height: '100%', p: { xs: 3, md: 4 }, borderRadius: 2, bgcolor: '#FFF9F0', border: '1px solid #EEDFCB', display: 'flex', flexDirection: 'column' }}>
+                  <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2.5 }}>
+                    <Avatar sx={{ bgcolor: review.color, width: 46, height: 46 }}>{review.initials}</Avatar>
+                    <Box>
+                      <Stack direction="row" spacing={0.5} alignItems="center">
+                        <Typography fontWeight={700}>{review.name}</Typography>
+                        <CheckCircleIcon sx={{ fontSize: 16, color: 'primary.main' }} />
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary">2 days ago on {review.source}</Typography>
+                    </Box>
+                  </Stack>
+                  <Rating value={5} readOnly sx={{ color: '#F4C84A', mb: 1.5 }} />
+                  <Typography variant="h6" sx={{ fontSize: '1.05rem', mb: 0.75 }}>{review.title}</Typography>
+                  <Typography color="text.secondary" sx={{ lineHeight: 1.65, flexGrow: 1 }}>{review.text}</Typography>
+                  <Typography variant="body2" color="primary.main" fontWeight={700} sx={{ mt: 2 }}>Read full story</Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+
+          <Button component={RouterLink} to="/contact" variant="contained" color="primary" size="large" endIcon={<ArrowForwardIcon />} sx={{ mt: 5 }}>
+            Plan your own story
+          </Button>
+        </Box>
       </Container>
+      <Footer />
     </Box>
   )
 }

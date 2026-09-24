@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Container, Paper, Typography, TextField, Button, Alert, Grid } from '@mui/material'
+import { Container, Paper, Typography, TextField, Button, Alert, Grid, Box, Stack } from '@mui/material'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../../lib/firebase'
+import Footer from '../../components/Footer'
 
 const emptyForm = { name: '', email: '', message: '' }
 
@@ -31,13 +32,32 @@ export default function Contact() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ py: 6 }}>
-      <Typography variant="h4" sx={{ mb: 1 }}>Contact us</Typography>
-      <Typography color="text.secondary" sx={{ mb: 4 }}>
-        Questions about a package or booking? Send us a message.
-      </Typography>
+    <>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 9 } }}>
+        <Typography variant="overline" color="secondary.main" sx={{ letterSpacing: '0.16em', fontWeight: 700 }}>WE ARE HERE TO HELP</Typography>
+        <Typography variant="h1" sx={{ fontSize: { xs: '3rem', md: '5rem' }, lineHeight: 1, mt: 1, mb: 2 }}>Let’s plan something good.</Typography>
+        <Typography color="text.secondary" sx={{ maxWidth: 650, fontSize: '1.1rem', lineHeight: 1.7, mb: 5 }}>
+          Questions about a package, a destination, or a booking? Tell us what you are imagining and our travel experts will help shape the next step.
+        </Typography>
 
-      <Paper elevation={2} sx={{ p: 3 }}>
+        <Grid container spacing={5} alignItems="flex-start">
+          <Grid item xs={12} md={5}>
+            <Stack spacing={3}>
+              {[
+                ['Email us', 'hello@voyagetravels.com', 'We usually reply within one business day.'],
+                ['Call us', '+233 24 000 0000', 'Monday to Friday, 8:00 AM to 5:00 PM.'],
+                ['Visit us', '12 Independence Avenue, Accra', 'Come by for a conversation about your next journey.'],
+              ].map(([title, detail, text]) => (
+                <Box key={title}>
+                  <Typography variant="h5" sx={{ mb: 0.5 }}>{title}</Typography>
+                  <Typography fontWeight={600}>{detail}</Typography>
+                  <Typography color="text.secondary">{text}</Typography>
+                </Box>
+              ))}
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Paper elevation={2} sx={{ p: { xs: 3, md: 4 } }}>
         {sent && <Alert severity="success" sx={{ mb: 2 }}>Message sent — we'll get back to you soon.</Alert>}
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <form onSubmit={handleSubmit}>
@@ -79,7 +99,11 @@ export default function Contact() {
             </Grid>
           </Grid>
         </form>
-      </Paper>
-    </Container>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+      <Footer />
+    </>
   )
 }

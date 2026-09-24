@@ -11,6 +11,7 @@ import PackageDetail from './pages/customer/PackageDetail'
 import Booking from './pages/customer/Booking'
 import MyBookings from './pages/customer/MyBookings'
 import Contact from './pages/customer/Contact'
+import InfoPage from './pages/customer/InfoPage'
 import Login from './pages/auth/Login'
 import Signup from './pages/auth/Signup'
 import AdminDashboard from './pages/admin/Dashboard'
@@ -31,7 +32,6 @@ export default function App() {
           <Route path="/packages" element={<Packages />} />
           <Route path="/packages/:id" element={<PackageDetail />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/my-trips" element={<SavedTrips />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 

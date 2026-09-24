@@ -27,7 +27,6 @@ export default function PackageDetail() {
   const { pkg, loading } = usePackage(id)
   const { user } = useAuth()
   const navigate = useNavigate()
-  const { toggleSavedTrip, isSaved } = useSavedTrips()
 
   if (loading) {
     return (
@@ -65,7 +64,7 @@ export default function PackageDetail() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundImage: pkg.image ? `url(/images/${pkg.image})` : 'none',
+              backgroundImage: imageSource !== 'none' ? `url(${imageSource})` : 'none',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}

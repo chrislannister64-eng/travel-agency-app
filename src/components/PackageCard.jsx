@@ -4,6 +4,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule'
 
 export default function PackageCard({ pkg }) {
   const navigate = useNavigate()
+  const imageSource = pkg.image?.startsWith('http') ? pkg.image : pkg.image ? `/images/${pkg.image}` : undefined
 
   return (
     <Card sx={{ height: '100%', overflow: 'hidden', transition: 'transform 180ms ease, box-shadow 180ms ease', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 18px 36px rgba(23, 42, 42, 0.12)' } }}>
@@ -17,7 +18,7 @@ export default function PackageCard({ pkg }) {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          image={pkg.image ? `/images/${pkg.image}` : undefined}
+          image={imageSource}
           title={pkg.title}
         >
           {!pkg.image && (

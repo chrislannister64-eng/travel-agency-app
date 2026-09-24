@@ -20,6 +20,12 @@ const theme = createTheme({
   },
   shape: { borderRadius: 12 },
   components: {
+    MuiContainer: {
+      styleOverrides: {
+        maxWidthLg: { maxWidth: 1440 },
+        maxWidthXl: { maxWidth: 1600 },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: { backgroundColor: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(14px)' },

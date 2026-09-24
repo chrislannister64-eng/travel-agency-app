@@ -20,6 +20,7 @@ import { useAuth } from '../context/AuthContext'
 
 const navLinks = [
   { label: 'Home', to: '/' },
+  { label: 'About', to: '/info/about-us' },
   { label: 'Destinations', to: '/destinations' },
   { label: 'Packages', to: '/packages' },
   { label: 'Plan my trip', to: '/my-trips' },
@@ -44,12 +45,25 @@ export default function Navbar() {
       <Button component={RouterLink} to="/my-bookings" color="inherit">
         My Bookings
       </Button>
-      {isAdmin && (
-        <Button component={RouterLink} to="/admin" color="inherit">
-          Admin
-        </Button>
-      )}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
+      <Box
+        component={isAdmin ? RouterLink : 'div'}
+        to={isAdmin ? '/admin' : undefined}
+        aria-label={isAdmin ? 'Open admin dashboard' : undefined}
+        title={isAdmin ? 'Open admin dashboard' : undefined}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          ml: 1,
+          color: 'inherit',
+          textDecoration: 'none',
+          borderRadius: 999,
+          px: isAdmin ? 1 : 0,
+          py: isAdmin ? 0.5 : 0,
+          cursor: isAdmin ? 'pointer' : 'default',
+          '&:hover': isAdmin ? { bgcolor: 'rgba(23, 107, 103, 0.08)' } : {},
+        }}
+      >
         <Avatar sx={{ width: 28, height: 28, fontSize: 14, bgcolor: 'primary.main' }}>
           {(user.displayName || user.email || '?').charAt(0).toUpperCase()}
         </Avatar>
@@ -69,7 +83,7 @@ export default function Navbar() {
 
   return (
     <AppBar position="sticky" color="default" elevation={0} sx={{ borderBottom: '1px solid rgba(23, 42, 42, 0.08)' }}>
-      <Toolbar sx={{ justifyContent: 'space-between', maxWidth: 1240, width: '100%', mx: 'auto', py: 0.75 }}>
+      <Toolbar sx={{ justifyContent: 'space-between', maxWidth: 1440, width: '100%', mx: 'auto', px: { xs: 2, md: 3 }, py: 0.75 }}>
         <Typography
           component={RouterLink}
           to="/"
@@ -112,7 +126,7 @@ export default function Navbar() {
                       to="/admin"
                       onClick={() => setDrawerOpen(false)}
                     >
-                      <ListItemText primary="Admin" />
+                      <ListItemText primary="Admin dashboard" />
                     </ListItemButton>
                   )}
                   {user ? (
