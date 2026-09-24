@@ -1,4 +1,5 @@
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
 
 const firebaseApp =
@@ -13,6 +14,7 @@ const firebaseApp =
       })
 
 const db = getFirestore(firebaseApp)
+const auth = getAuth(firebaseApp)
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,14 +24,20 @@ export default async function handler(req, res) {
   }
 
   const { bookingId, reference } = req.body
+  const authorization = req.headers.authorization || ''
+  const idToken = authorization.startsWith('Bearer ')
+    ? authorization.slice('Bearer '.length)
+    : ''
 
-  if (!bookingId || !reference) {
+  if (!bookingId || !reference || !idToken) {
     return res.status(400).json({
-      error: 'bookingId and reference are required',
+      error: 'bookingId, reference, and authentication are required',
     })
   }
 
   try {
+    const decodedToken = await auth.verifyIdToken(idToken)
+
     // 1. Find the booking in Firestore
     const bookingRef = db.collection('bookings').doc(bookingId)
     const bookingSnap = await bookingRef.get()
@@ -41,6 +49,11 @@ export default async function handler(req, res) {
     }
 
     const booking = bookingSnap.data()
+    if (booking.userId !== decodedToken.uid) {
+      return res.status(403).json({
+        error: 'You are not allowed to verify this booking',
+      })
+    }
 
     // 2. Verify the payment with Paystack
     const response = await fetch(

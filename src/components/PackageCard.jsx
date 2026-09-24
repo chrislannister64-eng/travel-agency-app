@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { Card, CardActionArea, CardContent, CardMedia, Typography, Chip, Box } from '@mui/material'
+import { Card, CardActionArea, CardContent, CardMedia, Typography, Chip, Box, Stack } from '@mui/material'
+import ScheduleIcon from '@mui/icons-material/Schedule'
 
 export default function PackageCard({ pkg }) {
   const navigate = useNavigate()
@@ -26,8 +27,12 @@ export default function PackageCard({ pkg }) {
         <CardContent>
           <Chip label={pkg.destination} size="small" color="primary" variant="outlined" sx={{ mb: 1 }} />
           <Typography variant="h6" component="div" sx={{ fontWeight: 700 }}>{pkg.title}</Typography>
-          <Typography variant="body2" color="text.secondary">{pkg.duration}</Typography>
-          <Box sx={{ mt: 1 }}>
+          <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 0.5 }}>
+            <ScheduleIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
+            <Typography variant="body2" color="text.secondary">{pkg.duration}</Typography>
+          </Stack>
+          {pkg.tagline && <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>{pkg.tagline}</Typography>}
+          <Box sx={{ mt: 2 }}>
             <Typography variant="subtitle1" fontWeight={600}>
               {pkg.currency} {Number(pkg.price).toLocaleString()}
             </Typography>

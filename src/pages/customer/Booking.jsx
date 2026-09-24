@@ -12,7 +12,7 @@ import {
   Divider,
 } from '@mui/material'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { db, functions } from '../../lib/firebase'
+import { db } from '../../lib/firebase'
 import { usePackage } from '../../hooks/usePackage'
 import { useAuth } from '../../context/AuthContext'
 import { payWithPaystack } from '../../lib/paystack'
@@ -23,7 +23,7 @@ export default function Booking() {
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const [travelers, setTravelers] = useState(1)
+  const [travelers, setTravelers] = useState('1')
   const [phone, setPhone] = useState('')
   const [status, setStatus] = useState('idle') // idle | processing | verifying | error
   const [error, setError] = useState('')
@@ -44,11 +44,18 @@ export default function Booking() {
     )
   }
 
-  const totalAmount = Number(pkg.price) * travelers
+  const travelerCount = Number(travelers)
+  const totalAmount = Number(pkg.price) * (Number.isInteger(travelerCount) && travelerCount > 0 ? travelerCount : 0)
 
   async function handlePay(e) {
     e.preventDefault()
     setError('')
+
+    if (!Number.isInteger(travelerCount) || travelerCount < 1) {
+      setError('Enter at least 1 traveler.')
+      return
+    }
+
     setStatus('processing')
 
     try {
@@ -59,7 +66,7 @@ export default function Booking() {
         userId: user.uid,
         packageId: pkg.id,
         packageSnapshot: { title: pkg.title, price: pkg.price, currency: pkg.currency },
-        numTravelers: travelers,
+        numTravelers: travelerCount,
         phone,
         status: 'pending',
         paymentStatus: 'unpaid',
@@ -77,26 +84,27 @@ export default function Booking() {
           setStatus('verifying')
           try {
             // 3. NEVER trust the client-side "success" callback alone —
-            // it can be spoofed. A Cloud Function verifies the transaction
-            // server-side with Paystack's secret key before we mark it paid.
+            // it can be spoofed. The Vercel API verifies the transaction
+            // server-side before we mark it paid.
+            const idToken = await user.getIdToken()
             const verifyResponse = await fetch('/api/verify-payment', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    bookingId: bookingRef.id,
-    reference: response.reference,
-  }),
-})
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${idToken}`,
+              },
+              body: JSON.stringify({
+                bookingId: bookingRef.id,
+                reference: response.reference || response.trxref,
+              }),
+            })
 
-const verifyData = await verifyResponse.json()
+            const verifyData = await verifyResponse.json()
+            if (!verifyResponse.ok || !verifyData.verified) {
+              throw new Error(verifyData.error || 'Payment verification failed')
+            }
 
-if (!verifyResponse.ok || !verifyData.verified) {
-  throw new Error(verifyData.error || 'Payment verification failed')
-}
-
-navigate('/my-bookings')
+            navigate('/my-bookings')
           } catch (err) {
             console.error(err)
             setError('Payment succeeded but verification failed. Contact support with reference: ' + reference)
@@ -130,7 +138,10 @@ navigate('/my-bookings')
                 required
                 inputProps={{ min: 1 }}
                 value={travelers}
-                onChange={(e) => setTravelers(Math.max(1, Number(e.target.value)))}
+                onChange={(e) => setTravelers(e.target.value)}
+                onBlur={() => {
+                  if (!travelers || Number(travelers) < 1) setTravelers('1')
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>

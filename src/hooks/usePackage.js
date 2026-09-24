@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { demoPackages } from './usePackages'
 
 export function usePackage(packageId) {
   const [pkg, setPkg] = useState(null)
@@ -11,11 +12,14 @@ export function usePackage(packageId) {
     const unsubscribe = onSnapshot(
       doc(db, 'packages', packageId),
       (snap) => {
-        setPkg(snap.exists() ? { id: snap.id, ...snap.data() } : null)
+        setPkg(snap.exists()
+          ? { id: snap.id, ...snap.data() }
+          : demoPackages.find((item) => item.id === packageId) || null)
         setLoading(false)
       },
       (err) => {
         console.error('usePackage error:', err)
+        setPkg(demoPackages.find((item) => item.id === packageId) || null)
         setLoading(false)
       },
     )

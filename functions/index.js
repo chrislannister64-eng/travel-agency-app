@@ -43,7 +43,10 @@ function verifyWithPaystack(reference) {
 // This is the ONLY place a booking is allowed to flip to "paid" from a
 // client-triggered call — and even here, we re-check with Paystack's
 // servers using the secret key rather than trusting the client's word.
-exports.verifyPayment = onCall({ secrets: ['PAYSTACK_SECRET_KEY'] }, async (request) => {
+exports.verifyPayment = onCall({
+  cors: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  secrets: ['PAYSTACK_SECRET_KEY'],
+}, async (request) => {
   const { bookingId, reference } = request.data
   if (!request.auth) throw new HttpsError('unauthenticated', 'Must be logged in.')
   if (!bookingId || !reference) throw new HttpsError('invalid-argument', 'Missing bookingId or reference.')

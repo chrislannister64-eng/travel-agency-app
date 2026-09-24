@@ -7,6 +7,7 @@ React + React Router + Material UI (MUI) + Firebase (Auth + Firestore) + Paystac
 - **Destinations** — browse, search destinations (derived from package data)
 - **Packages** — browse/search/filter packages by destination
 - **Package detail** (`/packages/:id`) — full info, "Book now"
+- **Plan my trip** (`/my-trips`) — save and compare favourite journeys in a travel notebook
 - **Booking** (`/booking/:packageId`, protected) — traveler details + Paystack checkout
 - **My Bookings** (protected) — booking history with status
 - **Contact** — message form, saved to Firestore
@@ -104,3 +105,17 @@ src/
 functions/      Cloud Functions — verifyPayment, paystackWebhook, setAdminClaim
 firestore.rules server-side security rules
 ```
+
+## Product direction
+
+Voyage is designed as a curated travel agency experience inspired by the
+planning model used by Nordic Visitor: handpicked accommodation, transport,
+activities, transparent inclusions and local support are presented as one
+coherent journey rather than a bare hotel or tour listing.
+
+The customer MVP includes a small fallback catalogue in
+`src/hooks/usePackages.js`, so the product can be demonstrated before
+Firestore has been seeded. Firestore packages automatically replace that
+catalogue when active records exist. Saved journeys currently use browser
+storage through `useSavedTrips`; this keeps the planner usable immediately
+and gives a clear seam for a future authenticated `savedTrips` collection.

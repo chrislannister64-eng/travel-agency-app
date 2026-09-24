@@ -17,6 +17,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import AdminPackages from './pages/admin/Packages'
 import AdminBookings from './pages/admin/Bookings'
 import AdminPayments from './pages/admin/Payments'
+import SavedTrips from './pages/customer/SavedTrips'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/packages" element={<Packages />} />
           <Route path="/packages/:id" element={<PackageDetail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/my-trips" element={<SavedTrips />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
